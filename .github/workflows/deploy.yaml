@@ -1,0 +1,24 @@
+name: Deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    permissions: write-all
+    name: 🔖 release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: make build
+
+      - name: Creates a release in GitHub and uploads attachments
+        run: gh release create ${{ github.event.release.tag_name }} -F ./build.txt
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        shell: bash
