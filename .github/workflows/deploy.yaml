@@ -1,8 +1,11 @@
 name: Deploy
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+    paths:
+      - "CHANGELOG.md"
 
 jobs:
   release:
@@ -18,7 +21,7 @@ jobs:
         run: make build
 
       - name: Creates a release in GitHub and uploads attachments
-        run: gh release create ${{ github.event.release.tag_name }} -F ./build.txt
+        run: gh release create ${{ github.ref_name }}  -F CHANGELOG.md ./build.txt
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         shell: bash
